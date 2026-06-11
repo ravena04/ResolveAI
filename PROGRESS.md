@@ -26,6 +26,12 @@
 - Rule-Based Classification
 - Node.js ↔ FastAPI Integration
 
+### Tomorrow
+- Groq API Integration
+- AI Suggestion Endpoint
+- Replace Rule-Based Categorization
+- Prepare ChromaDB Setup
+
 ## Next Milestones
 - Groq Integration
 - AI Suggestions Endpoint
