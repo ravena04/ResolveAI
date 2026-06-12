@@ -1,6 +1,10 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
+
 from services.categorizer import categorize
+from services.suggestor import generate_solution
+
+import json
 
 router = APIRouter()
 
@@ -17,3 +21,19 @@ def classify_ticket(data: TicketRequest):
     )
 
     return result
+
+
+@router.post("/suggest")
+def suggest_solution(data: TicketRequest):
+
+    result = generate_solution(
+        data.description
+    )
+
+    try:
+        return json.loads(result)
+    except:
+        return {
+            "suggestion": result,
+            "confidence": 70
+        }

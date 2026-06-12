@@ -27,6 +27,7 @@
 
 * FastAPI Setup
 * Categorization Endpoint
+* Suggestion Endpoint
 * FastAPI Route Structure
 * Node.js ↔ FastAPI Integration
 * Rule-Based Ticket Classification
@@ -34,6 +35,8 @@
 * LLM-Powered Ticket Categorization
 * Dynamic Category Detection
 * Dynamic Priority Detection
+* AI Troubleshooting Suggestion Generation
+* AI Confidence Score Generation
 
 ### Knowledge Management
 
@@ -58,15 +61,29 @@
 ## Current Architecture
 
 Employee Creates Ticket
+
 ↓
+
 Node.js Backend
+
 ↓
+
 FastAPI AI Service
+
 ↓
+
 Groq LLM
+
 ↓
+
 Category + Priority Classification
+
 ↓
+
+AI Suggestion + Confidence Score
+
+↓
+
 MongoDB Ticket Storage
 
 ---
@@ -75,9 +92,8 @@ MongoDB Ticket Storage
 
 ### AI Enhancement
 
-* AI Solution Generation
-* AI Confidence Scoring
 * AI Suggestion Storage in Tickets
+* Node.js ↔ Suggestion Endpoint Integration
 
 ---
 
@@ -85,8 +101,8 @@ MongoDB Ticket Storage
 
 ### AI Features
 
-* AI Suggestion Endpoint
-* AI-Powered Troubleshooting Responses
+* Save AI Suggestions in Tickets
+* AI-Assisted Ticket Resolution Workflow
 * Similar Ticket Detection
 * Sentiment Analysis
 * AI Report Generation
@@ -136,7 +152,9 @@ Groq LLM Integration: ✅
 
 AI Categorization: ✅
 
-AI Suggestions: ⏳
+AI Suggestions: ✅
+
+Node.js AI Integration: ⏳
 
 ChromaDB: ⏳
 
@@ -152,11 +170,30 @@ Deployment: ⏳
 
 ## Latest Achievement (June 2026)
 
-Successfully replaced rule-based ticket categorization with Groq-powered LLM classification.
+Successfully implemented Groq-powered AI capabilities for ticket management.
 
-The AI service now analyzes ticket descriptions and automatically predicts:
+The AI service can now:
 
-* Ticket Category
-* Ticket Priority
+* Automatically classify ticket category
+* Automatically determine ticket priority
+* Generate troubleshooting suggestions
+* Generate confidence scores for recommendations
 
-This establishes the foundation for upcoming RAG-powered ticket resolution and AI-generated troubleshooting suggestions.
+Example:
+
+Input:
+
+"VPN stopped working after Windows update"
+
+Output:
+
+* Category: Network
+* Priority: High
+* Suggested Resolution:
+  - Restart VPN service
+  - Recreate VPN profile
+  - Reboot system
+  - Test connectivity
+* Confidence Score: 95%
+
+This establishes the foundation for upcoming ChromaDB, LangChain, and RAG-powered ticket resolution.
