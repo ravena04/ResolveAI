@@ -2,7 +2,9 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface ITicket extends Document {
   title: string;
+
   description: string;
+
   category:
     | "Network"
     | "Hardware"
@@ -30,13 +32,20 @@ export interface ITicket extends Document {
 
   screenshotUrl?: string;
 
+  aiSuggestion?: string;
+
+  aiConfidence?: number;
+
   resolutionNote?: string;
+
   isAddedToKnowledgeBase: boolean;
 
   resolvedBy?: "AI" | "Agent";
+
   resolvedAt?: Date;
 
   createdAt: Date;
+
   updatedAt: Date;
 }
 
@@ -99,17 +108,36 @@ const ticketSchema = new Schema<ITicket>(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-isAddedToKnowledgeBase: {
-  type: Boolean,
-  default: false,
-},
-    screenshotUrl: String,
 
-    resolutionNote: String,
+    isAddedToKnowledgeBase: {
+      type: Boolean,
+      default: false,
+    },
+
+    screenshotUrl: {
+      type: String,
+    },
+
+    aiSuggestion: {
+      type: String,
+    },
+
+    aiConfidence: {
+      type: Number,
+      default: 0,
+    },
+
+    resolutionNote: {
+      type: String,
+    },
 
     resolvedBy: {
       type: String,
       enum: ["AI", "Agent"],
+    },
+
+    resolvedAt: {
+      type: Date,
     },
   },
   {
