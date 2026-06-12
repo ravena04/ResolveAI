@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from services.categorizer import categorize_ticket
+from services.categorizer import categorize
 
 router = APIRouter()
 
@@ -10,8 +10,9 @@ class TicketRequest(BaseModel):
 
 
 @router.post("/categorize")
-def categorize(data: TicketRequest):
-    result = categorize_ticket(
+def classify_ticket(data: TicketRequest):
+
+    result = categorize(
         data.description
     )
 

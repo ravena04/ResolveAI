@@ -1,28 +1,14 @@
-def categorize_ticket(description: str):
-    text = description.lower()
+from services.groq_service import classify_ticket
+import json
 
-    category = "Other"
-    priority = "Medium"
+def categorize(description: str):
 
-    if "vpn" in text or "network" in text:
-        category = "Network"
+    result = classify_ticket(description)
 
-    elif "laptop" in text or "keyboard" in text:
-        category = "Hardware"
-
-    elif "software" in text or "application" in text:
-        category = "Software"
-
-    elif "login" in text or "access" in text:
-        category = "Access"
-
-    if (
-        "urgent" in text
-        or "critical" in text
-    ):
-        priority = "Critical"
-
-    return {
-        "category": category,
-        "priority": priority,
-    }
+    try:
+        return json.loads(result)
+    except:
+        return {
+            "category": "Other",
+            "priority": "Medium"
+        }
