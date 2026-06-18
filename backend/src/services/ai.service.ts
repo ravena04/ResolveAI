@@ -19,13 +19,40 @@ export const categorizeTicket = async (
     return response.data;
   } catch (error) {
     console.error(
-      "AI Service Error:",
+      "AI Categorization Error:",
       error
     );
 
     return {
       category: "Other",
       priority: "Medium",
+    };
+  }
+};
+
+export const getAISuggestion = async (
+  description: string
+) => {
+  try {
+    const response =
+      await axios.post(
+        `${AI_URL}/suggest`,
+        {
+          description,
+        }
+      );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "AI Suggestion Error:",
+      error
+    );
+
+    return {
+      suggestion:
+        "No AI suggestion available.",
+      confidence: 0,
     };
   }
 };

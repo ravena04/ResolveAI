@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Ticket from "../models/ticket.model";
 import Notification from "../models/notification.model";
 import { getIO } from "../socket";
-import { categorizeTicket }from "../services/ai.service";
+import {categorizeTicket,getAISuggestion,} from "../services/ai.service";
 
 /**
  * Create Ticket
@@ -20,8 +20,14 @@ export const createTicket = async (
     } = req.body;
 
     // AI Categorization
-    const aiResult =
+    const aiCategory =
       await categorizeTicket(
+        description
+      );
+
+    // AI Suggestion
+    const aiSuggestion =
+      await getAISuggestion(
         description
       );
 
@@ -31,10 +37,18 @@ export const createTicket = async (
         description,
 
         category:
-          aiResult.category,
+          aiCategory.category,
 
         priority:
-          aiResult.priority,
+          aiCategory.priority,
+
+        aiSuggestion:
+          aiSuggestion.suggestion,
+
+        aiConfidence:
+          aiSuggestion.confidence,
+
+        status: "ai_suggested",
 
         screenshotUrl,
 
@@ -46,6 +60,7 @@ export const createTicket = async (
       success: true,
       message:
         "Ticket created successfully",
+
       ticket,
     });
   } catch (error) {
