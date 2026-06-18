@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import KnowledgeBase from "../models/knowledgeBase.model";
 import Ticket from "../models/ticket.model";
 import Notification from "../models/notification.model";
+import { addToVectorDB } from "../services/rag.service";
 /**
  * Create Knowledge Base Article
  * Admin Only
@@ -11,29 +12,47 @@ export const createArticle = async (
   res: Response
 ) => {
   try {
-    const { title, content, category, tags, sourceTicketId } =
-      req.body;
-
-    const article = await KnowledgeBase.create({
+    const {
       title,
       content,
       category,
       tags,
       sourceTicketId,
-      uploadedBy: (req as any).user.userId,
-    });
+    } = req.body;
+
+    const article =
+      await KnowledgeBase.create({
+        title,
+        content,
+        category,
+        tags,
+        sourceTicketId,
+        uploadedBy:
+          (req as any).user.userId,
+      });
+
+    await addToVectorDB(
+      article._id.toString(),
+      article.title,
+      article.content
+    );
 
     res.status(201).json({
       success: true,
-      message: "Article created successfully",
+      message:
+        "Article created successfully",
       article,
     });
   } catch (error) {
-    console.error("Create Article Error:", error);
+    console.error(
+      "Create Article Error:",
+      error
+    );
 
     res.status(500).json({
       success: false,
-      message: "Failed to create article",
+      message:
+        "Failed to create article",
     });
   }
 };
@@ -176,66 +195,99 @@ export const deleteArticle = async (
     });
   }
 };
-export const createArticleFromTicket = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const { ticketId } = req.params;
+export const createArticleFromTicket =
+  async (
+    req: Request,
+    res: Response
+  ) => {
+    try {
+      const { ticketId } =
+        req.params;
 
-    const ticket = await Ticket.findById(ticketId);
+      const ticket =
+        await Ticket.findById(
+          ticketId
+        );
 
-    if (!ticket) {
-      return res.status(404).json({
+      if (!ticket) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Ticket not found",
+        });
+      }
+
+      if (
+        ticket.status !==
+        "resolved"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Only resolved tickets can be added to Knowledge Base",
+        });
+      }
+
+      if (
+        ticket.isAddedToKnowledgeBase
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Ticket already added to Knowledge Base",
+        });
+      }
+
+      const article =
+        await KnowledgeBase.create({
+          title: ticket.title,
+          content:
+            ticket.resolutionNote,
+          category:
+            ticket.category,
+          tags: [
+            ticket.category.toLowerCase(),
+          ],
+          sourceTicketId:
+            ticket._id,
+          uploadedBy:
+            (req as any).user.userId,
+        });
+
+      await addToVectorDB(
+        article._id.toString(),
+        article.title,
+        article.content
+      );
+
+      ticket.isAddedToKnowledgeBase =
+        true;
+
+      await ticket.save();
+
+      await Notification.create({
+        userId: ticket.raisedBy,
+        ticketId: ticket._id,
+        type: "ticket_resolved",
+        message: `Your ticket "${ticket.title}" has been resolved.`,
+      });
+
+      res.status(201).json({
+        success: true,
+        message:
+          "Knowledge Base article created from ticket",
+        article,
+      });
+    } catch (error) {
+      console.error(
+        "Create KB From Ticket Error:",
+        error
+      );
+
+      res.status(500).json({
         success: false,
-        message: "Ticket not found",
+        message:
+          "Failed to create article from ticket",
       });
     }
-
-    if (ticket.status !== "resolved") {
-      return res.status(400).json({
-        success: false,
-        message: "Only resolved tickets can be added to Knowledge Base",
-      });
-    }
-
-    if (ticket.isAddedToKnowledgeBase) {
-      return res.status(400).json({
-        success: false,
-        message: "Ticket already added to Knowledge Base",
-      });
-    }
-
-    const article = await KnowledgeBase.create({
-      title: ticket.title,
-      content: ticket.resolutionNote,
-      category: ticket.category,
-      tags: [ticket.category.toLowerCase()],
-      sourceTicketId: ticket._id,
-      uploadedBy: (req as any).user.userId,
-    });
-
-    ticket.isAddedToKnowledgeBase = true;
-
-    await ticket.save();
-    await Notification.create({
-  userId: ticket.raisedBy,
-  ticketId: ticket._id,
-  type: "ticket_resolved",
-  message: `Your ticket "${ticket.title}" has been resolved.`,
-});
-
-    res.status(201).json({
-      success: true,
-      message: "Knowledge Base article created from ticket",
-      article,
-    });
-  } catch (error) {
-    console.error("Create KB From Ticket Error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Failed to create article from ticket",
-    });
-  }
-};
+  };

@@ -165,7 +165,7 @@ AI Suggestions: ✅
 
 Node.js AI Integration: ✅
 
-ChromaDB: ⏳
+ChromaDB: ✅
 
 LangChain: ⏳
 
