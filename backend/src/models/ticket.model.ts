@@ -36,6 +36,10 @@ export interface ITicket extends Document {
 
   aiConfidence?: number;
 
+  ragAnswer?: string;
+
+  ragSources?: string[];
+
   resolutionNote?: string;
 
   isAddedToKnowledgeBase: boolean;
@@ -126,6 +130,16 @@ const ticketSchema = new Schema<ITicket>(
       type: Number,
       default: 0,
     },
+
+    ragAnswer: {
+      type: String,
+    },
+
+    ragSources: [
+      {
+        type: String,
+      },
+    ],
 
     resolutionNote: {
       type: String,

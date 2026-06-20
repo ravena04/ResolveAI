@@ -56,3 +56,30 @@ export const getAISuggestion = async (
     };
   }
 };
+
+export const getRAGSolution = async (
+  description: string
+) => {
+  try {
+    const response =
+      await axios.post(
+        `${AI_URL}/kb/solution`,
+        {
+          query: description,
+        }
+      );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "RAG Solution Error:",
+      error
+    );
+
+    return {
+      answer:
+        "No RAG solution available.",
+      context: [],
+    };
+  }
+};

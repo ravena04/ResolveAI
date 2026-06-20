@@ -1,5 +1,6 @@
 import chromadb
 from sentence_transformers import SentenceTransformer
+from services.groq_service import (generate_rag_response)
 
 client = chromadb.PersistentClient(
     path="./chroma_db"
@@ -44,4 +45,53 @@ def add_document(
 
     return {
         "success": True
+    }
+
+
+def search_documents(
+    query: str,
+    limit: int = 3
+):
+    embedding_model = get_model()
+
+    query_embedding = (
+        embedding_model.encode(
+            query
+        ).tolist()
+    )
+
+    results = collection.query(
+        query_embeddings=[
+            query_embedding
+        ],
+        n_results=limit
+    )
+
+    return results
+
+def generate_solution(
+    query: str
+):
+    results = search_documents(
+        query
+    )
+
+    documents = results.get(
+        "documents",
+        [[]]
+    )[0]
+
+    kb_context = "\n\n".join(
+        documents
+    )
+
+    answer = generate_rag_response(
+        query,
+        kb_context
+    )
+
+    return {
+        "query": query,
+        "context": documents,
+        "answer": answer
     }

@@ -28,9 +28,9 @@
 * FastAPI Setup
 * Categorization Endpoint
 * Suggestion Endpoint
+* RAG Endpoint
 * FastAPI Route Structure
 * Node.js ↔ FastAPI Integration
-* Rule-Based Ticket Classification
 * Groq API Integration
 * LLM-Powered Ticket Categorization
 * Dynamic Category Detection
@@ -38,11 +38,25 @@
 * AI Troubleshooting Suggestion Generation
 * AI Confidence Score Generation
 
+### RAG Pipeline
+
+* ChromaDB Setup
+* Persistent Vector Database
+* SentenceTransformer Embeddings
+* Knowledge Base Document Ingestion
+* Semantic Similarity Search
+* Context Retrieval from ChromaDB
+* Groq-Powered RAG Answer Generation
+* RAG Search Endpoint
+* RAG Resolve Endpoint
+
 ### Knowledge Management
 
 * Create Knowledge Base Article from Resolved Ticket
 * Knowledge Base Search APIs
 * Ticket-to-Knowledge Conversion
+* Knowledge Base Vector Storage
+* Knowledge Base Semantic Retrieval
 
 ### Notifications
 
@@ -60,7 +74,9 @@
 
 * AI Suggestion Storage in Tickets
 * Node.js ↔ AI Suggestion Integration
+* Node.js ↔ RAG Integration
 * End-to-End AI Ticket Creation Workflow
+* End-to-End RAG Ticket Resolution Workflow
 
 ---
 
@@ -78,15 +94,11 @@ FastAPI AI Service
 
 ↓
 
-Groq LLM
+Groq LLM Classification
 
 ↓
 
-Category Classification
-
-↓
-
-Priority Classification
+Category + Priority Detection
 
 ↓
 
@@ -94,35 +106,78 @@ AI Suggestion Generation
 
 ↓
 
-Confidence Score Generation
+ChromaDB Knowledge Retrieval
+
+↓
+
+RAG Answer Generation
 
 ↓
 
 MongoDB Ticket Storage
+
 ---
 
+## Current AI Workflow
 
+Ticket Description
+
+↓
+
+Groq Classification
+
+↓
+
+Category Prediction
+
+↓
+
+Priority Prediction
+
+↓
+
+AI Suggestion Generation
+
+↓
+
+ChromaDB Semantic Search
+
+↓
+
+Relevant Knowledge Base Retrieval
+
+↓
+
+Groq RAG Reasoning
+
+↓
+
+Final Resolution Recommendation
+
+↓
+
+Saved Inside Ticket
+
+---
 
 ## Next Milestones
 
 ### AI Features
 
-* AI-Assisted Ticket Resolution Workflow
 * Similar Ticket Detection
+* Ticket Clustering
 * Sentiment Analysis
 * AI Report Generation
-* AI-Assisted Ticket Resolution Workflow
-* Similar Ticket Detection
-* Sentiment Analysis
-* AI Report Generation
+* Auto Resolution Confidence Ranking
+* Multi-Document Knowledge Retrieval
 
-### RAG Pipeline
+### LangChain Layer
 
-* ChromaDB Setup
-* Vector Embeddings
 * LangChain Integration
-* Knowledge Base Retrieval
-* RAG-Based Ticket Resolution
+* Retrieval Chains
+* Prompt Templates
+* Agent Workflows
+* Memory Support
 
 ### Frontend
 
@@ -131,13 +186,17 @@ MongoDB Ticket Storage
 * Admin Dashboard
 * Real-Time Notification UI
 * Chat Interface
+* AI Resolution Viewer
+* Knowledge Base Management UI
 
 ### Deployment
 
 * Backend Deployment
-* AI Service Deployment
+* FastAPI Deployment
+* ChromaDB Persistence Setup
 * MongoDB Atlas Configuration
-* Production Environment Setup
+* Environment Hardening
+* Production Monitoring
 
 ---
 
@@ -165,11 +224,21 @@ AI Suggestions: ✅
 
 Node.js AI Integration: ✅
 
-ChromaDB: ✅
+ChromaDB Integration: ✅
+
+Vector Embeddings: ✅
+
+Semantic Search: ✅
+
+RAG Retrieval: ✅
+
+RAG Answer Generation: ✅
+
+End-to-End RAG Workflow: ✅
 
 LangChain: ⏳
 
-RAG Pipeline: ⏳
+Similar Ticket Detection: ⏳
 
 Frontend Dashboards: ⏳
 
@@ -179,32 +248,32 @@ Deployment: ⏳
 
 ## Latest Achievement (June 2026)
 
-Successfully completed the first end-to-end AI-powered ticket processing workflow.
+Successfully implemented a complete Retrieval-Augmented Generation (RAG) pipeline for ResolveAI.
 
-When an employee creates a ticket, the system now:
+When a user creates a ticket, the platform now:
 
-* Sends the ticket description to the FastAPI AI service
-* Uses Groq LLM for analysis
-* Predicts ticket category
-* Predicts ticket priority
+* Classifies the issue using Groq LLM
+* Determines ticket priority automatically
 * Generates troubleshooting suggestions
 * Generates confidence scores
-* Stores all AI outputs directly in MongoDB
+* Searches historical knowledge base articles using ChromaDB semantic search
+* Retrieves the most relevant solutions
+* Uses Groq to generate a contextual RAG-powered resolution
+* Stores AI and RAG outputs directly inside the ticket
 
 Example:
 
 Input:
+
 "VPN stopped working after Windows update"
 
 Output:
 
 * Category: Network
 * Priority: High
-* AI Suggestion:
-  - Restart VPN service
-  - Recreate VPN profile
-  - Reboot system
-  - Test connectivity
-* Confidence Score: 95%
+* AI Suggestion Generated
+* Confidence Score Generated
+* Knowledge Base Retrieved
+* RAG Resolution Generated
 
-This milestone completes the AI-assisted ticket creation workflow and establishes the foundation for ChromaDB, LangChain, semantic retrieval, and RAG-powered ticket resolution.
+The system now combines LLM reasoning with organizational knowledge, providing significantly more accurate support recommendations and forming the core intelligence layer of ResolveAI.

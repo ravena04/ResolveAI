@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Ticket from "../models/ticket.model";
 import Notification from "../models/notification.model";
 import { getIO } from "../socket";
-import {categorizeTicket,getAISuggestion,} from "../services/ai.service";
+import {categorizeTicket,getAISuggestion,getRAGSolution} from "../services/ai.service";
 
 /**
  * Create Ticket
@@ -31,6 +31,12 @@ export const createTicket = async (
         description
       );
 
+    // RAG Solution
+    const ragResult =
+      await getRAGSolution(
+        description
+      );
+
     const ticket =
       await Ticket.create({
         title,
@@ -48,6 +54,12 @@ export const createTicket = async (
         aiConfidence:
           aiSuggestion.confidence,
 
+        ragAnswer:
+          ragResult.answer,
+
+        ragSources:
+          ragResult.context,
+
         status: "ai_suggested",
 
         screenshotUrl,
@@ -60,7 +72,6 @@ export const createTicket = async (
       success: true,
       message:
         "Ticket created successfully",
-
       ticket,
     });
   } catch (error) {
