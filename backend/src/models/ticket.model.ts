@@ -40,6 +40,11 @@ export interface ITicket extends Document {
 
   ragSources?: string[];
 
+  similarTickets?: string[];
+
+  similarityScores?: number[];
+  autoResolved?: boolean;
+
   resolutionNote?: string;
 
   isAddedToKnowledgeBase: boolean;
@@ -140,6 +145,22 @@ const ticketSchema = new Schema<ITicket>(
         type: String,
       },
     ],
+
+    similarTickets: [
+      {
+        type: String,
+      },
+    ],
+
+    similarityScores: [
+      {
+        type: Number,
+      },
+    ],
+    autoResolved: {
+  type: Boolean,
+  default: false,
+},
 
     resolutionNote: {
       type: String,

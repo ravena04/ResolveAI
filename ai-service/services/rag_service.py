@@ -1,6 +1,8 @@
 import chromadb
 from sentence_transformers import SentenceTransformer
-from services.groq_service import (generate_rag_response)
+from services.groq_service import (
+    generate_rag_response
+)
 
 client = chromadb.PersistentClient(
     path="./chroma_db"
@@ -69,6 +71,7 @@ def search_documents(
 
     return results
 
+
 def generate_solution(
     query: str
 ):
@@ -94,4 +97,30 @@ def generate_solution(
         "query": query,
         "context": documents,
         "answer": answer
+    }
+
+
+def find_similar_tickets(
+    query: str,
+    limit: int = 5
+):
+    results = search_documents(
+        query,
+        limit
+    )
+
+    documents = results.get(
+        "documents",
+        [[]]
+    )[0]
+
+    distances = results.get(
+        "distances",
+        [[]]
+    )[0]
+
+    return {
+        "query": query,
+        "similarTickets": documents,
+        "scores": distances
     }

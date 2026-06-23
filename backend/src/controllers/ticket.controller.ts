@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Ticket from "../models/ticket.model";
 import Notification from "../models/notification.model";
 import { getIO } from "../socket";
-import {categorizeTicket,getAISuggestion,getRAGSolution} from "../services/ai.service";
+import {categorizeTicket,getAISuggestion,getRAGSolution,getSimilarTickets, shouldAutoResolve} from "../services/ai.service";
 
 /**
  * Create Ticket
@@ -37,6 +37,19 @@ export const createTicket = async (
         description
       );
 
+    // Similar Tickets
+    const similarResult =
+      await getSimilarTickets(
+        description
+      );
+
+    // Auto Resolution Check
+    const autoResolveResult =
+      await shouldAutoResolve(
+        aiSuggestion.confidence,
+        ragResult.context.length
+      );
+
     const ticket =
       await Ticket.create({
         title,
@@ -60,7 +73,29 @@ export const createTicket = async (
         ragSources:
           ragResult.context,
 
-        status: "ai_suggested",
+        similarTickets:
+          similarResult.similarTickets,
+
+        similarityScores:
+          similarResult.scores,
+
+        status:
+          autoResolveResult.autoResolve
+            ? "resolved"
+            : "ai_suggested",
+
+        autoResolved:
+          autoResolveResult.autoResolve,
+
+        resolvedBy:
+          autoResolveResult.autoResolve
+            ? "AI"
+            : undefined,
+
+        resolvedAt:
+          autoResolveResult.autoResolve
+            ? new Date()
+            : undefined,
 
         screenshotUrl,
 
@@ -71,7 +106,9 @@ export const createTicket = async (
     res.status(201).json({
       success: true,
       message:
-        "Ticket created successfully",
+        autoResolveResult.autoResolve
+          ? "Ticket auto-resolved by AI"
+          : "Ticket created successfully",
       ticket,
     });
   } catch (error) {

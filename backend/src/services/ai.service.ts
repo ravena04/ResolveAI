@@ -83,3 +83,56 @@ export const getRAGSolution = async (
     };
   }
 };
+
+export const getSimilarTickets = async (
+  description: string
+) => {
+  try {
+    const response =
+      await axios.post(
+        `${AI_URL}/kb/similar`,
+        {
+          query: description,
+        }
+      );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Similar Ticket Error:",
+      error
+    );
+
+    return {
+      similarTickets: [],
+      scores: [],
+    };
+  }
+};
+export const shouldAutoResolve = async (
+  confidence: number,
+  ragContextCount: number
+) => {
+  try {
+    const response =
+      await axios.post(
+        `${AI_URL}/auto-resolve`,
+        {
+          confidence,
+          rag_context_count:
+            ragContextCount,
+        }
+      );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Auto Resolve Error:",
+      error
+    );
+
+    return {
+      autoResolve: false,
+    };
+  }
+};
